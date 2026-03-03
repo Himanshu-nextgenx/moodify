@@ -88,4 +88,14 @@ console.log("Body:", req.body);
 
 }
 
-export {registerController ,loginController}
+const getmeController = async(req,res)=>{
+    const user = await userModel.findById(req.user.id)
+
+return res.status(200).json({
+    message:"user feched successfully",
+    user
+})
+
+}
+
+export {registerController ,loginController,getmeController}
