@@ -1,7 +1,7 @@
 import userModel from "../models/user.model.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import Redis from "ioredis";
+import redis from "../config/redis.js";
 
 const registerController =  async (req,res)=>{
  
@@ -89,9 +89,9 @@ console.log("Body:", req.body);
 
 }
 
-const logoutControlletr = async(req,res)=>{
+const logoutController = async(req,res)=>{
     const token = req.cookies.token;
-    await Redis.set(token, Date.now().toString(), {EX:60*60})
+    await redis.set(token, Date.now().toString(), {EX:60*60})
 
     res.clearCookie("token");
 
@@ -110,4 +110,4 @@ return res.status(200).json({
 
 }
 
-export {registerController ,loginController,getmeController,logoutControlletr}
+export {registerController ,loginController,getmeController,logoutController}
