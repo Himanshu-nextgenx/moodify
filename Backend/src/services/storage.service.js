@@ -14,4 +14,4 @@ async function uploadFile({buffer,filename,folder}){
     return file 
 }
 
-export { uploadFile}
+export default uploadFile

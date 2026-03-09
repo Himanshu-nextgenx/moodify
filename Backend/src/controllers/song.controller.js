@@ -1,10 +1,11 @@
-import songModel from "../models/songs.model";
-import storageService from "../services/storage.service";
+import songModel from "../models/songs.model.js";
+import storageService from "../services/storage.service.js";
 import id3 from "node-id3";
 
-const mood = req.body;
+
 
 async function uploadSongController(req, res) {
+    const mood = req.body;
   const songBufffer = req.file.buffer;
   const tags = id3.read(songBufffer);
 

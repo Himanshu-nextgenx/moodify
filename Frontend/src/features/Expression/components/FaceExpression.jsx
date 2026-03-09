@@ -1,56 +1,70 @@
 import React, { useEffect, useRef, useState } from "react";
-import { initializeFaceLandmarker, detectExpression } from "../utils/utils.js";
+import { initializeFaceLandmarker, detectExpression } from "../utils/utils";
 
-export default function FaceExpressionDetector() {
+export default function FaceExpression({ onClick = () => {} }) {
   const videoRef = useRef(null);
-  const faceLandmarkerRef = useRef(null);
-
-  const [expression, setExpression] = useState("Click button to detect");
+  const landmarkerRef = useRef(null);
+  const [expression, setExpression] = useState("Detecting...");
 
   useEffect(() => {
-    initializeFaceLandmarker(videoRef, faceLandmarkerRef);
+    let videoElement = null;
+    let landmarker = null;
+
+    const startCamera = async () => {
+      await initializeFaceLandmarker(videoRef, landmarkerRef);
+
+      videoElement = videoRef.current;
+      landmarker = landmarkerRef.current;
+    };
+
+    startCamera();
 
     return () => {
-      if (videoRef.current?.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      if (landmarker) {
+        landmarker.close();
+      }
+
+      if (videoElement?.srcObject) {
+        videoElement.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
 
   const handleDetect = () => {
-    const result = detectExpression(videoRef, faceLandmarkerRef);
+    const result = detectExpression(videoRef, landmarkerRef);
     setExpression(result);
+    onClick(result);
   };
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h2>Facial Expression Detector</h2>
+      <h2>Face Expression Detector</h2>
 
       <video
         ref={videoRef}
         autoPlay
+        muted
         playsInline
         style={{
-          width: "420px",
-          borderRadius: "10px",
-          border: "2px solid black",
+          width: "400px",
+          borderRadius: "12px",
+          border: "2px solid #333",
         }}
       />
 
-      <div style={{ marginTop: "20px" }}>
-        <button
-          onClick={handleDetect}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-        >
-          Detect Expression
-        </button>
-      </div>
+      <h3>{expression}</h3>
 
-      <h3 style={{ marginTop: "20px" }}>Expression: {expression}</h3>
+      <button
+        onClick={handleDetect}
+        style={{
+          padding: "10px 20px",
+          marginTop: "10px",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        Detect Expression
+      </button>
     </div>
   );
 }

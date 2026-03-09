@@ -1,8 +1,8 @@
-import express from" express"
-import {  uploadSongController, getSongController } from "../controllers/song.controller"
-import upload from "../middlewares/upload.middleware"
+import Router from "express"
+import {  uploadSongController, getSongController } from "../controllers/song.controller.js"
+import upload from "../middlewares/upload.middleware.js"
 
-const songRouter = express.Router()
+const songRouter = Router()
 
 songRouter.post("/",upload.single("song"),uploadSongController)
 songRouter.get("/",getSongController)
